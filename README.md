@@ -2,23 +2,20 @@
 
 Spring Boot service implementing the cart-offer APIs.
 
-## Prerequisities
+## Prerequisites
 
-- Java 11+
+- Java 17+
 - Maven 3.8+
-- Docker for MockServer (optional)
+- Docker for MockServer
 
-### ⚠️ Why is Docker/MockServer optional?
+## MockServer
 
-- For **Tests**: not needed (tests use in-memory [WireMock](https://wiremock.org/docs/configuration/)).
-- For **Manual Testing(Curl/Postman)**: required (app calls user segment API on port 1080, so MockServer must respond).
-
-## Mockserver
+Start MockServer on port 1080:
 
 ```bash
 cd mockserver
 docker compose up
-# the mock server will start at port 1080
+# service available at http://localhost:1080
 ```
 
 ## Build
@@ -33,19 +30,32 @@ This gives a runnable jar: `target/simple-springboot-app-0.0.1-SNAPSHOT.jar`
 
 ```bash
 java -jar target/simple-springboot-app-0.0.1-SNAPSHOT.jar
-# Service: http://localhost:9001
+# Service runs at http://localhost:9001
 ```
 
-# Run with MockServer
+## Run Tests
 
-Start MockServer (default port 1080):
+- Requires the app to start on port 9001
+- Requires MockServer running on port 1080
 
 ```bash
-cd mockserver
-docker compose up
+mvn -q test # Run all tests
+# or
+mvn -q -Dtest=CartOffer_HappyPath test
+mvn -q -Dtest=CartOffer_BusinessRules test
+mvn -q -Dtest=CartOffer_Validation test
+mvn -q -Dtest=CartOffer_Resilience test
 ```
 
-Sets expectation(s) in MockServer to return segment(s) for specific user(s) (example: user 101 → p1):
+The tests (`CartOfferApplicationTests.java`) will:
+
+- Seed offers via `/api/v1/offer`
+- Program expectations in MockServer
+- Call `/api/v1/cart/apply_offer` and verify results
+
+## Run with MockServer
+
+Once MockServer is up, you can set **expectations** so it returns segments for specific users. For example, to always return `p1` for user `101`:
 
 ```bash
 curl -X PUT http://localhost:1080/mockserver/expectation \
@@ -62,14 +72,13 @@ curl -X PUT http://localhost:1080/mockserver/expectation \
       "body": { "json": {"segment":"p1"} }
     }
   }'
-
 ```
 
-# APIs
+## APIs
 
-## Seed Offer
+### Seed Offer
 
-Stored inside the Spring Boot app. Add them by calling `POST /api/v1/offer`. Rules like “p1 users at restaurant 1 get ₹10 off”. Think of this as seeding the app’s in-memory offers database.
+Stored inside the Spring Boot app (in-memory). Add them by calling `POST /api/v1/offer`.
 
 ```bash
 POST http://localhost:9001/api/v1/offer
@@ -83,9 +92,9 @@ POST http://localhost:9001/api/v1/offer
 
 > Response: `{"response_msg":"success"}`
 
-## Apply Offer
+### Apply Offer
 
-Stored inside MockServer. Add them by calling `PUT /mockserver/expectation`. Think of this as mocking the external segment database/service
+Uses both the app’s in-memory offers **and** the segment from MockServer.
 
 ```bash
 POST http://localhost:9001/api/v1/cart/apply_offer
@@ -100,7 +109,7 @@ POST http://localhost:9001/api/v1/cart/apply_offer
 
 ## Flow
 
-```bash
+```
 Client (curl/Postman)
    │
    ▼
@@ -108,11 +117,4 @@ Spring Boot app (localhost:9001)
    │  (calls user segment service)
    ▼
 MockServer (localhost:1080)
-```
-
-## Run Tests
-
-```bash
-mvn test
-# mvn clean test
 ```
