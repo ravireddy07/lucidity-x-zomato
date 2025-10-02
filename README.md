@@ -114,4 +114,5 @@ MockServer (localhost:1080)
 
 ```bash
 mvn test
+# mvn clean test
 ```
