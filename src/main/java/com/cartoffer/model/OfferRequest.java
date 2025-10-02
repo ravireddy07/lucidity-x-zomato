@@ -1,10 +1,15 @@
 package com.cartoffer.model;
 
 import jakarta.validation.constraints.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class OfferRequest {
   @NotNull
   private Integer restaurant_id;
