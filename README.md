@@ -1,6 +1,6 @@
 # sample-cart-offer
 
-Spring Boot service implementing the cart-offer APIs.
+Spring Boot service implementing the Cart Offer APIs.
 
 ## Prerequisites
 
@@ -10,12 +10,13 @@ Spring Boot service implementing the cart-offer APIs.
 
 ## MockServer
 
-Start MockServer on port 1080:
+Requires MockServer running on port 1080. Start MockServer on port 1080:
 
 ```bash
 cd mockserver
 docker compose up
 # service available at http://localhost:1080
+curl -i -X PUT http://localhost:1080/mockserver/status # should be 200
 ```
 
 ## Build
@@ -28,6 +29,8 @@ This gives a runnable jar: `target/simple-springboot-app-0.0.1-SNAPSHOT.jar`
 
 ## Run the Application
 
+Requires the app to start on port 9001
+
 ```bash
 java -jar target/simple-springboot-app-0.0.1-SNAPSHOT.jar
 # Service runs at http://localhost:9001
@@ -35,15 +38,12 @@ java -jar target/simple-springboot-app-0.0.1-SNAPSHOT.jar
 
 ## Run Tests
 
-- Requires the app to start on port 9001
-- Requires MockServer running on port 1080
+Tests are split into multiple files:
 
-Tests are split by concern into multiple files:
-
-- Happy path tests → CartOfferHappyPathTests
-- Business rules / edge cases → CartOfferBusinessRulesTests
-- Validation tests → CartOfferValidationTests
-- Resilience tests → CartOfferResilienceTests
+- Happy path tests -> CartOfferHappyPathTests
+- Business rules / edge cases -> CartOfferBusinessRulesTests
+- Validation tests -> CartOfferValidationTests
+- Resilience tests -> CartOfferResilienceTests
 
 ```bash
 mvn test # Run all tests
@@ -56,11 +56,9 @@ mvn -Dtest=CartOfferResilienceTests test
 
 ### What the tests do:
 
-- Seed offers via /api/v1/offer
+- Seed offers via `/api/v1/offer`
 - Program expectations in MockServer
-- Call /api/v1/cart/apply_offer and verify results (final cart_value)
-
-> JUnit reports are generated in: target/surefire-reports/
+- Call `/api/v1/cart/apply_offer` & verify results (final cart_value)
 
 ## Reports
 
