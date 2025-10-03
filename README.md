@@ -8,6 +8,14 @@ Spring Boot service implementing the Cart Offer APIs.
 - Maven 3.8+
 - Docker for MockServer
 
+## Demo
+
+Please find this [Recording](https://drive.google.com/file/d/1MnqM8dEAtclH7wXeLAh1RHQVqqfXm3Kf/view?usp=sharing) on How to Build, Run Tests & Generate a Report
+
+## Test Design
+
+Please find this [Document](https://docs.google.com/spreadsheets/d/1vzRxm8piXBkHmVDFaKbVL5URxEAu0QATJ6ntpYQ6rR4/edit?usp=sharing) of the sample Test cases
+
 ## MockServer
 
 Requires MockServer running on port 1080. Start MockServer on port 1080:
