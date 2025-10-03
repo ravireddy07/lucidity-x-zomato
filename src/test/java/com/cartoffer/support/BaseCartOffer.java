@@ -17,6 +17,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.concurrent.TimeUnit;
+import java.time.Duration;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -25,6 +26,9 @@ import static org.hamcrest.Matchers.equalTo;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = CartOfferApplication.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class BaseCartOffer {
+  private static final String MOCK_HOST = "127.0.0.1";
+  private static final int MOCK_PORT = 1080;
+
   @LocalServerPort
   int port;
 
@@ -41,28 +45,31 @@ public abstract class BaseCartOffer {
 
   @BeforeEach
   void resetState() throws InterruptedException {
-    // waitForMockServer();
+    waitForMockServer(Duration.ofSeconds(15));
     RestAssured.port = port;
     store.clear();
-    mock = new MockServerClient("localhost", 1080).reset();
+    mock = new MockServerClient(MOCK_HOST, MOCK_PORT).reset();
     mock.reset();
   }
 
-  // private void waitForMockServer() throws InterruptedException {
-  // long deadline = System.currentTimeMillis() + 30_000;
-  // Exception last = null;
-  // while (System.currentTimeMillis() < deadline) {
-  // try {
-  // new MockServerClient("localhost", 1080).reset();
-  // return;
-  // } catch (Exception e) {
-  // last = e;
-  // Thread.sleep(500);
-  // }
-  // }
-  // throw new IllegalStateException("MockServer not reachable on
-  // http://localhost:1080 within 30s", last);
-  // }
+  private void waitForMockServer(Duration maxWait) {
+    long deadline = System.currentTimeMillis() + maxWait.toMillis();
+    Throwable last = null;
+    while (System.currentTimeMillis() < deadline) {
+      try {
+        new MockServerClient(MOCK_HOST, MOCK_PORT).retrieveActiveExpectations(null);
+        return;
+      } catch (Throwable t) {
+        last = t;
+        try {
+          Thread.sleep(300);
+        } catch (InterruptedException ignored) {
+        }
+      }
+    }
+    throw new IllegalStateException("MockServer not reachable on " + MOCK_HOST + ":" + MOCK_PORT + " within " + maxWait,
+        last);
+  }
 
   protected void seedOffer(int restaurantId, String offerType, int offerValue, String... segments) {
     StringBuilder segJson = new StringBuilder("[");
