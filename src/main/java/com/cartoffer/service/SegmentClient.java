@@ -21,9 +21,9 @@ public class SegmentClient {
     }
 
     /**
-     * @return lower-cased segment (e.g., "p1"), or null if upstream says 404 (no
+     * @return lower-cased segment (e.g: "p1"), or null if upstream says 404 (no
      *         segment).
-     *         Throws UpstreamUnavailableException for 5xx/timeout/malformed.
+     *         Throws UpstreamUnavailableException for 5xx/timeout.
      */
     public String getSegmentForUser(int userId) {
         String url = "http://localhost:1080/api/v1/user_segment?user_id={userId}";
@@ -36,12 +36,11 @@ public class SegmentClient {
                 return String.valueOf(seg).toLowerCase();
             }
             if (resp.getStatusCode().value() == 404) {
-                return null; // treat as "no segment"
+                return null; // "no segment"
             }
-            // Anything else unexpected → upstream unavailable
             throw new UpstreamUnavailableException("status=" + resp.getStatusCode());
         } catch (HttpClientErrorException.NotFound e) {
-            return null; // 404 → no segment
+            return null; // 404 -> no segment
         } catch (HttpServerErrorException e) {
             throw new UpstreamUnavailableException("5xx from segment", e);
         } catch (ResourceAccessException e) { // timeouts, IO

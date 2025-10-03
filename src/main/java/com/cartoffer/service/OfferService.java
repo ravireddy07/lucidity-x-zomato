@@ -37,8 +37,6 @@ public class OfferService {
         if (offers.isEmpty())
             return req.cart_value();
 
-        // Convert OfferStore.Offer into OfferRequest (so DiscountService can reuse its
-        // logic)
         List<OfferRequest> offerRequests = offers.stream()
                 .map(o -> new OfferRequest(o.restaurantId(), o.type(), o.value(), List.copyOf(o.segments())))
                 .toList();

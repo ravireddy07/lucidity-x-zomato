@@ -98,6 +98,9 @@
         <version>3.11.0</version>
         <configuration>
           <release>${java.version}</release>
+          <systemPropertyVariables>
+            <mockserver.maxSocketTimeout>60000</mockserver.maxSocketTimeout>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
     </plugins>
