@@ -4,7 +4,7 @@ import com.cartoffer.support.BaseCartOffer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class CartOffer_HappyPath extends BaseCartOffer {
+class CartOfferHappyPathTests extends BaseCartOffer {
     @Test
     @DisplayName("01) FLATX for p1: 200 -> 190")
     void tc01_flat_p1() {

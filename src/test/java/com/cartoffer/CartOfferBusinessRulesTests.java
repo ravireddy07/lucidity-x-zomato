@@ -4,7 +4,7 @@ import com.cartoffer.support.BaseCartOffer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class CartOffer_BusinessRules extends BaseCartOffer {
+class CartOfferBusinessRulesTests extends BaseCartOffer {
     @Test
     @DisplayName("06) FLATX cannot reduce below zero (clamp to 0)")
     void tc06_flat_clamp_zero() {

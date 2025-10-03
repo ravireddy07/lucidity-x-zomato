@@ -38,20 +38,38 @@ java -jar target/simple-springboot-app-0.0.1-SNAPSHOT.jar
 - Requires the app to start on port 9001
 - Requires MockServer running on port 1080
 
+Tests are split by concern into multiple files:
+
+- Happy path tests → CartOfferHappyPathTests
+- Business rules / edge cases → CartOfferBusinessRulesTests
+- Validation tests → CartOfferValidationTests
+- Resilience tests → CartOfferResilienceTests
+
 ```bash
-mvn -q test # Run all tests
+mvn test # Run all tests
 # or
-mvn -q -Dtest=CartOffer_HappyPath test
-mvn -q -Dtest=CartOffer_BusinessRules test
-mvn -q -Dtest=CartOffer_Validation test
-mvn -q -Dtest=CartOffer_Resilience test
+mvn -Dtest=CartOfferBusinessRulesTests test
+mvn -Dtest=CartOfferHappyPathTests test
+mvn -Dtest=CartOfferValidationTests test
+mvn -Dtest=CartOfferResilienceTests test
 ```
 
-The tests (`CartOfferApplicationTests.java`) will:
+### What the tests do:
 
-- Seed offers via `/api/v1/offer`
+- Seed offers via /api/v1/offer
 - Program expectations in MockServer
-- Call `/api/v1/cart/apply_offer` and verify results
+- Call /api/v1/cart/apply_offer and verify results (final cart_value)
+
+> JUnit reports are generated in: target/surefire-reports/
+
+## Reports
+
+Make sure to run the test(s) atleast once :)
+
+```bash
+mvn surefire-report:report # This generates: 'target/reports/**'
+# Preview the surefire.html file or open in Chrome to visualise the test results
+```
 
 ## Run with MockServer
 
