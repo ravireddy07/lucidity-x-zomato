@@ -1,11 +1,12 @@
 package com.cartoffer;
 
-import com.cartoffer.support.BaseCartOffer;
-import io.restassured.http.ContentType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import com.cartoffer.support.BaseCartOffer;
+
 import static io.restassured.RestAssured.given;
+import io.restassured.http.ContentType;
 
 class CartOfferValidationTests extends BaseCartOffer {
     @Test
@@ -30,7 +31,7 @@ class CartOfferValidationTests extends BaseCartOffer {
     @DisplayName("13) Validation: invalid offer_type → 400")
     void tc13_invalid_offer_type_400() {
         given().contentType(ContentType.JSON)
-                .body("{\"restaurant_id\":1,\"offer_type\":\"BOGO\",\"offer_value\":10,\"customer_segment\":[\"p1\"]}")
+                .body("{\"restaurant_id\":1,\"offer_type\":\"LUCIDITY_INVALID\",\"offer_value\":10,\"customer_segment\":[\"p1\"]}")
                 .when().post("/api/v1/offer")
                 .then().statusCode(400);
     }
