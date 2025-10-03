@@ -46,7 +46,7 @@ Tests are split into multiple files:
 - Resilience tests -> CartOfferResilienceTests
 
 ```bash
-mvn test # Run all tests
+mvn clean test # Run all tests
 # or
 mvn -Dtest=CartOfferBusinessRulesTests test
 mvn -Dtest=CartOfferHappyPathTests test
@@ -61,8 +61,6 @@ mvn -Dtest=CartOfferResilienceTests test
 - Call `/api/v1/cart/apply_offer` & verify results (final cart_value)
 
 ## Reports
-
-Make sure to run the test(s) atleast once :)
 
 ```bash
 mvn surefire-report:report # This generates: 'target/reports/**'
